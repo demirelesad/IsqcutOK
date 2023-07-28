@@ -16,7 +16,18 @@ class color:
    UNDERLINE = '\033[4m'
    END = '\033[0m'
 
-def isqcut_ok(series,q=5, ):
+
+def isqcut_ok(series,q=5):
+    """
+    The groups of the series divided by the given q value are examined through statistical tests.
+    The accuracy of the q value is checked.
+
+    :param series: Series
+    :param q: int
+    
+    :return: True if the q value is useable, False if the similarity has been detected in the groups.
+    """
+    output = False
     if q in [3, 4, 5, 6]:
         temp_series = pd.qcut(series.rank(method="first"), q, labels=[str(col) + ". Grup" for col in range(1, q + 1)])
         temp_df = pd.DataFrame({"score": list(series), "group": list(temp_series)})
@@ -57,9 +68,11 @@ def isqcut_ok(series,q=5, ):
                     print(color.BOLD + color.CYAN + "Gruplara bakıldığında aralarında anlamlı bir farklılık vardır." + color.END)
                     print(color.BOLD + color.RED + "Fakat gruplar kendi arasında değerlendirildiğinde bazı grupların birbirlerinden farkı olmadığı gözlemlenmiştir." + color.END)
                     print(color.BOLD + color.RED + "Bundan dolayı grup sayısında değişikliğe gidebilir veya veri setinizi gruplamaya bunu göze alarak devam edebilirsiniz." + color.END)
+                    output = False
                 else:
                     print(
                         color.BOLD + color.GREEN + "Bu diziyi {} gruba ayırmak istatistiksel olarak anlamlıdır. Kullanabilirsiniz. ".format(q) + color.END)
+                    output = True
 
             else:
                 print(color.BOLD + color.RED + "Bu grupların ortalaması arasında istatistiksel olarak anlamlı bir farklılık yoktur." + color.END)
@@ -102,9 +115,10 @@ def isqcut_ok(series,q=5, ):
                     print(
                         color.BOLD + color.GREEN + "Bu diziyi {} gruba ayırmak istatistiksel olarak anlamlıdır. Kullanabilirsiniz. ".format(
                             q) + color.END)
+                    output = True
                 else:
                     print(color.BOLD + color.RED + "Bu grupların ortalaması arasında istatistiksel olarak anlamlı bir farklılık yoktur." + color.END)
-
+                    output = False
 
             else:
                 print(color.BOLD + color.CYAN + "Varyans Homojenliği Kontrolü Yapıldı, Grupların Varyansı Homojen Değil.. Non-Parametric Test Yapılacak.." + color.END)
@@ -135,12 +149,16 @@ def isqcut_ok(series,q=5, ):
                             color.BOLD + color.RED + "Fakat gruplar kendi arasında değerlendirildiğinde bazı grupların birbirlerinden farkı olmadığı gözlemlenmiştir." + color.END)
                         print(
                             color.BOLD + color.RED + "Bundan dolayı grup sayısında değişikliğe gidebilir veya veri setinizi gruplamaya bunu göze alarak devam edebilirsiniz." + color.END)
+                        output = False
                     else:
                         print(
                             color.BOLD + color.GREEN + "Bu diziyi {} gruba ayırmak istatistiksel olarak anlamlıdır. Kullanabilirsiniz. ".format(
                                 q) + color.END)
-
+                        output = True
                 else:
                     print(color.BOLD + color.RED + "Bu grupların ortalaması arasında istatistiksel olarak anlamlı bir farklılık yoktur." + color.END)
+                    output = False
     else:
         print(color.BOLD + color.DARKCYAN + "Lütfen q değerini 3-4-5-6 sayılarından seçiniz.." + color.END)
+        output = False
+    return output
