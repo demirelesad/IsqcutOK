@@ -2,7 +2,7 @@
 This repository contains the isqcut_ok function
 
 
-The groups of the series divided by the given q value are examined through statistical tests.
+The groups of the series divided by the given q value are examined through statistical tests. \n
 The accuracy of the q value is checked.
 
 :param series: Series
